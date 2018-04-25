@@ -79,9 +79,10 @@ class player():
             runtime = 0
         return runtime
 
-    def choose_strategy(self):
+    def choose_strategy(self,simulation_time):
         """
         let the player simulate every possible strategy and bonus point to find out the best combination
+        :param: simulation_time: The number of times of the simulation
         """
         best_bonus = 0
         best_strategy = 0
@@ -92,7 +93,7 @@ class player():
                 avg_score = 0
                 score_list = []
                 self.strategy=strategy
-                for round in range(4000):
+                for round in range(simulation_time):
                     score = self._3pointer_contest()
                     score_list.append(score)
                 avg_score = sum(score_list)/len(score_list)
@@ -104,7 +105,6 @@ class player():
         self.bonus = best_bonus
         self.strategy=best_strategy
         print('The final stratgy {} applied is: bonus {} and strategy {} with the average score of {}'.format(self.name,self.bonus,self.strategy,best_score))
-
 
 
     def shootingtime(self, i, lefttime):
@@ -124,7 +124,7 @@ class player():
                 shootingtime = random.uniform(1, lefttime/(25-i))
         elif self.strategy == 3:
             if i in range(10):
-                shootingtime = random.uniform(1, lefttime / (25 - i)) * 1.5
+                shootingtime = random.uniform(1, lefttime / (25 - i)) * 2
             else:
                 shootingtime = random.uniform(1, lefttime / (25 - i))
         elif self.strategy == 4:
@@ -211,7 +211,7 @@ if __name__ == '__main__':
             num+=1
         player_list.append(player(attr_list))
     for player in player_list:
-        player.choose_strategy()
+        player.choose_strategy(6000)
     winner_list = []
     for index in range(6000):
         winner = one_simulation(player_list)
@@ -219,6 +219,6 @@ if __name__ == '__main__':
     print('--------------------------------------')
     print('Winning Rate:')
     for player in player_list:
-        print('The winning rate of {} is: {}'.format(player.name,round(winner_list.count(player.name) / len(winner_list),3)))
-
+        print('The winning rate of {} is: {}'.format(player.name,
+                                                     round(winner_list.count(player.name) / len(winner_list), 3)))
 
