@@ -32,3 +32,4 @@ List and describe your simulation's variables of uncertainty (where you're using
 http://stats.nba.com/players/shots-closest-defender/?Season=2017-18&SeasonType=Regular%20Season&sort=FG3M&dir=1&CloseDefDistRange=6%2B%20Feet%20-%20Wide%20Open
 
 2. NBA 2k18
+http://www.2kratings.com/
