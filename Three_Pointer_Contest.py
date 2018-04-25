@@ -106,7 +106,6 @@ class player():
         self.strategy=best_strategy
         print('The final stratgy {} applied is: bonus {} and strategy {} with the average score of {}'.format(self.name,self.bonus,self.strategy,best_score))
 
-
     def shootingtime(self, i, lefttime):
         """
         simulate the time to shoot each ball
@@ -211,14 +210,13 @@ if __name__ == '__main__':
             num+=1
         player_list.append(player(attr_list))
     for player in player_list:
-        player.choose_strategy(6000)
+        player.choose_strategy(1200)
     winner_list = []
-    for index in range(6000):
+    for index in range(1000):
         winner = one_simulation(player_list)
         winner_list.append(winner)
     print('--------------------------------------')
     print('Winning Rate:')
     for player in player_list:
         print('The winning rate of {} is: {}'.format(player.name,
-                                                     round(winner_list.count(player.name) / len(winner_list), 3)))
-
+                                                         round(winner_list.count(player.name) / len(winner_list), 3)))
