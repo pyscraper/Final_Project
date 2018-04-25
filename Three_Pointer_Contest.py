@@ -2,14 +2,14 @@ from random import choice, randint
 import random
 import math
 import csv
-
+import matplotlib.pyplot as plt
 class player():
     name=''
     _3PG = 0
     stamina = 0
     on_fire_prob = 0
     growing = 1
-    def __init__(self,attr_list,bonus=1,strategy=7):
+    def __init__(self,attr_list,bonus=1,strategy=5):
         self.name = attr_list[0]
         self._3PG=eval(attr_list[1])
         self.stamina= eval(attr_list[2])
@@ -37,17 +37,17 @@ class player():
             if lefttime <= 0:
                 break
             elif i in range(self.bonus*5-4 ,self.bonus*5+1):
-                if shoot<=(self._3PG*(1-self.stamina/100*(i))*math.log2(0.5*shootingtime+1))+state:
+                if shoot<=(self._3PG*(1-self.stamina/100*(i))*math.log2(min(2.5,(0.5*shootingtime+1))))+state:
                     score+=2
-                    offset+=2
+                    offset+=3
                 else:
-                    offset-=3
+                    offset-=2
             else:
-                if shoot<=(self._3PG*(1-self.stamina/100*(i))*math.log2(0.5*shootingtime+1))+state:
+                if shoot<=(self._3PG*(1-self.stamina/100*(i))*math.log2(min(2.5,(0.5*shootingtime+1))))+state:
                     score+=1
-                    offset+=2
+                    offset+=3
                 else:
-                    offset-=3
+                    offset-=2
             state = self.get_on_fire_state(offset)
             lefttime -= shootingtime + runtime
         return score
@@ -88,7 +88,7 @@ class player():
         best_score = 0
         for bonus in range(1,6):
             self.bonus = bonus
-            for strategy in range(1,8):
+            for strategy in range(1,6):
                 avg_score = 0
                 score_list = []
                 self.strategy=strategy
@@ -132,18 +132,8 @@ class player():
                 shootingtime = random.uniform(1 / 0.8, lefttime / (25 - i)) * 0.8
             else:
                 shootingtime = random.uniform(1, lefttime / (25 - i))
-        elif self.strategy ==5:
-            shootingtime = random.uniform(1, 2)
-        elif self.strategy ==6:
-            if i in range(self.bonus * 5 - 4, self.bonus * 5 + 1):
-                if lefttime>2:
-                    shootingtime = 2
-                else:
-                    shootingtime = random.uniform(1, lefttime / (25 - i))
-            else:
-                shootingtime = random.uniform(1, lefttime / (25 - i))
-        elif self.strategy == 7:
-            shootingtime= random.uniform(1.8,2.2)
+        elif self.strategy == 5:
+            shootingtime= random.uniform(2,3)
 
         return shootingtime
 
@@ -212,6 +202,7 @@ if __name__ == '__main__':
     file = csv.reader(open('player_data.csv'))
     headers = next(file)
     player_list=[]
+    result = {}
     for row in file:
         num = 0
         attr_list=[]
@@ -222,21 +213,12 @@ if __name__ == '__main__':
     for player in player_list:
         player.choose_strategy()
     winner_list = []
-    simulation_time = [1000,2000,3000,4000,5000,6000,7000]
-    for time in simulation_time:
-        for simulation_index in range(time):
-            winner= one_simulation(player_list)
-            winner_list.append(winner)
-        print('--------------------------')
-        print("ï¼·inning rate")
-        print('{0:11} {1:<5}'.format(player_list[0].name, winner_list.count(player_list[0].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[1].name, winner_list.count(player_list[1].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[2].name, winner_list.count(player_list[2].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[3].name, winner_list.count(player_list[3].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[4].name, winner_list.count(player_list[4].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[5].name, winner_list.count(player_list[5].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[6].name, winner_list.count(player_list[6].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[7].name, winner_list.count(player_list[7].name) / len(winner_list)))
-
+    for index in range(6000):
+        winner = one_simulation(player_list)
+        winner_list.append(winner)
+    print('--------------------------------------')
+    print('Winning Rate:')
+    for player in player_list:
+        print('The winning rate of {} is: {}'.format(player.name,round(winner_list.count(player.name) / len(winner_list),3)))
 
 
