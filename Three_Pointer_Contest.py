@@ -39,15 +39,15 @@ class player():
             elif i in range(self.bonus*5-4 ,self.bonus*5+1):
                 if shoot<=(self._3PG*(1-self.stamina/100*(i))*math.log2(min(2.5,(0.5*shootingtime+1))))+state:
                     score+=2
-                    offset+=3
+                    offset+=10
                 else:
-                    offset-=2
+                    offset-=6
             else:
                 if shoot<=(self._3PG*(1-self.stamina/100*(i))*math.log2(min(2.5,(0.5*shootingtime+1))))+state:
                     score+=1
-                    offset+=3
+                    offset+=10
                 else:
-                    offset-=2
+                    offset-=6
             state = self.get_on_fire_state(offset)
             lefttime -= shootingtime + runtime
         return score
@@ -92,7 +92,7 @@ class player():
                 avg_score = 0
                 score_list = []
                 self.strategy=strategy
-                for round in range(3000):
+                for round in range(4000):
                     score = self._3pointer_contest()
                     score_list.append(score)
                 avg_score = sum(score_list)/len(score_list)
@@ -119,7 +119,7 @@ class player():
             shootingtime = random.uniform(1, lefttime/(25-i))
         elif self.strategy == 2:
             if i in range(self.bonus * 5 - 4, self.bonus * 5 + 1):
-                shootingtime = random.uniform(1, lefttime / (25 - i)) * 2
+                shootingtime = random.uniform(1, lefttime / (25 - i)) * 1.5
             else:
                 shootingtime = random.uniform(1, lefttime/(25-i))
         elif self.strategy == 3:
