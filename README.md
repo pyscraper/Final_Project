@@ -11,8 +11,8 @@ TEMPLATE for your report:
 ## Team Member(s): MingFu Chou, Wenhao Hou, Han Li
 (Note: Don't put your email addresses here (which is public).  If a student wants their NAME hidden as well, due to optional FERPA regulations, they can be listed purely by their GitHub ID).
 
-# Monte Carlo Simulation Scenario & Purpose:
-(be sure to read the instructions given in course Moodle)
+# Monte Carlo Simulation Scenario & Purpose:(be sure to read the instructions given in course Moodle)
+
 Based on the three-point percentage, stamina, shooting stability ,the chosen location of money balls and strategy of each player, we simulate the score of all the participants in each round and pick players with the top two scores (player numbers may bigger than 2 if three or more get the top two scores simultaneously) to the final round. And then, we simulates the winner. After thousands of simulations, the program concludes the winning rate for each player and print out the best strategy and chosen location of money balls for each player.
 
 
