@@ -2,7 +2,7 @@ from random import choice, randint
 import random
 import math
 import csv
-
+import matplotlib.pyplot as plt
 class player():
     name=''
     _3PG = 0
@@ -212,6 +212,7 @@ if __name__ == '__main__':
     file = csv.reader(open('player_data.csv'))
     headers = next(file)
     player_list=[]
+    result = {}
     for row in file:
         num = 0
         attr_list=[]
@@ -221,22 +222,35 @@ if __name__ == '__main__':
         player_list.append(player(attr_list))
     for player in player_list:
         player.choose_strategy()
-    winner_list = []
-    simulation_time = [1000,2000,3000,4000,5000,6000,7000]
+    simulation_time = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000]
     for time in simulation_time:
-        for simulation_index in range(time):
-            winner= one_simulation(player_list)
-            winner_list.append(winner)
-        print('--------------------------')
-        print("ï¼·inning rate")
-        print('{0:11} {1:<5}'.format(player_list[0].name, winner_list.count(player_list[0].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[1].name, winner_list.count(player_list[1].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[2].name, winner_list.count(player_list[2].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[3].name, winner_list.count(player_list[3].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[4].name, winner_list.count(player_list[4].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[5].name, winner_list.count(player_list[5].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[6].name, winner_list.count(player_list[6].name) / len(winner_list)))
-        print('{0:11} {1:<5}'.format(player_list[7].name, winner_list.count(player_list[7].name) / len(winner_list)))
-
+        result[time] = []
+    for time in simulation_time:
+        for i in range(3):
+            winner_list = []
+            for simulation_index in range(time):
+                winner = one_simulation(player_list)
+                winner_list.append(winner)
+            for player in player_list:
+                if player.name == 'love':
+                    result[time].append(round(winner_list.count(player.name) / len(winner_list), 3))
+    for index in range(3):
+        rate_list = []
+        for item in result:
+            rate_list.append(result[item][index])
+        plt.plot(simulation_time, rate_list)
+    plt.xlabel('simulation time')
+    plt.ylabel('winning rate')
+    plt.title('result of love')
+    plt.legend()
+    plt.show()
+    winner_list = []
+    for index in range(6000):
+        winner = one_simulation(player_list)
+        winner_list.append(winner)
+    print('--------------------------------------')
+    print('Winning Rate:')
+    for player in player_list:
+        print('The winning rate of {} is: {}'.format(player.name,round(winner_list.count(player.name) / len(winner_list),3)))
 
 
