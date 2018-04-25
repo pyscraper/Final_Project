@@ -119,7 +119,7 @@ class player():
             shootingtime = random.uniform(1, lefttime/(25-i))
         elif self.strategy == 2:
             if i in range(self.bonus * 5 - 4, self.bonus * 5 + 1):
-                shootingtime = random.uniform(1, lefttime / (25 - i)) * 1.5
+                shootingtime = random.uniform(1, lefttime / (25 - i)) * 2
             else:
                 shootingtime = random.uniform(1, lefttime/(25-i))
         elif self.strategy == 3:
