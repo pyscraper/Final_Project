@@ -274,7 +274,7 @@ if __name__ == '__main__':
         print(player.name)
         print('\nBonus     Strategy    Average Score')
         print('-----     --------    -------------')
-        player.choose_strategy(100)
+        player.choose_strategy(1200)
     winner_list = []
     for index in range(1000):
         winner = one_simulation(player_list)
