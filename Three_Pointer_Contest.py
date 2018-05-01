@@ -3,69 +3,75 @@ import random
 import math
 import csv
 import matplotlib.pyplot as plt
-class player():
+
+
+# Define the class player
+class player:
     name=''
-    _3PG = 0
+    FG_3PCT = 0
     stamina = 0
-    on_fire_prob = 0
-    growing = 1
-    def __init__(self,attr_list,bonus=1,strategy=5):
+    onfire = 0
+    variance = 0
+
+
+    def __init__(self,attr_list,bonus=1,strategy=0):
         self.name = attr_list[0]
-        self._3PG=eval(attr_list[1])
+        self.FG_3PCT=eval(attr_list[1])
         self.stamina= eval(attr_list[2])
-        self.on_fire_prob = eval(attr_list[3])
-        self.growing=eval(attr_list[4])
+        self.onfire = eval(attr_list[3])
+        self.variance=eval(attr_list[4])
         self.bonus = bonus
         self.strategy = strategy
 
-    def _3pointer_contest(self):
+
+    def get_score(self):
         """
         simulate the score based on the shooting percetage of the player
-        :param _3PG: shooting percentage of a player
-        :return: the simulated score of the player
+        :param FG_3PCT: shooting percentage of a player
+        :return score: the simulated score of the player
         """
         score=0
-        offset = 0
-        state=0
+        onfire = self.onfire
         lefttime = 60.0
         for i in range(25):
             shoot = random.randint(1,100)
             runtime = self.runtime(i)
             shootingtime = self.shootingtime(i, lefttime)
+            # run out of time
             if lefttime<shootingtime:
-                shootingtime=lefttime
-            if lefttime <= 0:
                 break
-            elif i in range(self.bonus*5-4 ,self.bonus*5+1):
-                if shoot<=(self._3PG*(1-self.stamina/100*(i))*math.log2(min(2.5,(0.5*shootingtime+1))))+state:
-                    score+=2
-                    offset+=10
+            # making shot
+            elif shoot <= self.FG_3PCT * (1-self.stamina/100*(i)) \
+                                       * math.log2(min(2.5,(0.5*shootingtime+1))) \
+                                       + self.variance * self.get_onfire(onfire):
+                # Moneyball spot
+                if i in range(self.bonus * 5 - 4, self.bonus * 5 + 1):
+                    score += 2
+                    onfire += 5
                 else:
-                    offset-=6
+                    score += 1
+                    onfire += 5
+            # fail to make the shot
             else:
-                if shoot<=(self._3PG*(1-self.stamina/100*(i))*math.log2(min(2.5,(0.5*shootingtime+1))))+state:
-                    score+=1
-                    offset+=10
-                else:
-                    offset-=6
-            state = self.get_on_fire_state(offset)
+                onfire -= 3
+            # time deduction
             lefttime -= shootingtime + runtime
+
         return score
 
-
-    def get_on_fire_state(self,offset):
+    def get_onfire(self, onfire):
         """
-        define the state of a player for every shoot.
-        :param offset: the offset adding to the basic probability to turn on-fire state
-        :return: state: whether the state is on-fire of not
+        define the if a player is in onfire_mode for each shoot.
+        :param onfire: adding to the basic probability to turn on-fire state
+        :return: onfire_mode: 1 means player is in onfire_mode can increase their shooting %
+        and 0 means player is not in the onfire_mode, and there's no shooing % increase
         """
         prob = random.randint(1,100)
-        if prob<(self.on_fire_prob+offset):
-            state = self.growing
-            #print(self.name+ " is onfire")
+        if prob <= onfire:
+            onfire_mode = 1
         else:
-            state= 0
-        return state
+            onfire_mode = 0
+        return onfire_mode
 
     def runtime(self, i):
         """
@@ -86,25 +92,24 @@ class player():
         """
         best_bonus = 0
         best_strategy = 0
-        best_score = 0
+        best_score = 0.0
         for bonus in range(1,6):
             self.bonus = bonus
-            for strategy in range(1,6):
-                avg_score = 0
+            for strategy in range(0,6):
                 score_list = []
                 self.strategy=strategy
-                for round in range(simulation_time):
-                    score = self._3pointer_contest()
+                for r in range(simulation_time):
+                    score = self.get_score()
                     score_list.append(score)
-                avg_score = sum(score_list)/len(score_list)
-                #print('The average score with bonus {} and strategy {} is: {} '.format(self.bonus,self.strategy,avg_score))
+                avg_score = round((sum(score_list)/len(score_list)),2)
+                print('{:5} {:12} {:15} '.format(self.bonus,self.strategy,avg_score))
                 if avg_score>best_score:
                     best_score = avg_score
                     best_bonus = self.bonus
                     best_strategy=self.strategy
         self.bonus = best_bonus
         self.strategy=best_strategy
-        print('The final stratgy {} applied is: bonus {} and strategy {} with the average score of {}'.format(self.name,self.bonus,self.strategy,best_score))
+        print('\n >>> The best strategy for {} is: bonus {} and strategy {} \n >>> Average score = {} \n'.format(self.name,self.bonus,self.strategy,best_score))
 
     def shootingtime(self, i, lefttime):
         """
@@ -114,25 +119,33 @@ class player():
         :return: the simulated shooting time for each shoot
         """
         shootingtime = 0
-        if self.strategy == 1:
-            shootingtime = random.uniform(1, lefttime/(25-i))
+        # quick release
+        if self.strategy == 0:
+            shootingtime = random.uniform(1, 3)
+        # high quality
+        elif self.strategy == 1:
+            shootingtime = random.uniform(2, 4)
+        # high quality & time controlling
         elif self.strategy == 2:
+            shootingtime= random.uniform(2, lefttime / (25-i))
+        # focus on bonus spot
+        elif self.strategy == 3:
             if i in range(self.bonus * 5 - 4, self.bonus * 5 + 1):
-                shootingtime = random.uniform(1, lefttime / (25 - i)) * 2
+                shootingtime = random.uniform(3, 4)
             else:
                 shootingtime = random.uniform(1, lefttime/(25-i))
-        elif self.strategy == 3:
-            if i in range(10):
-                shootingtime = random.uniform(1, lefttime / (25 - i)) * 2
-            else:
-                shootingtime = random.uniform(1, lefttime / (25 - i))
+        # focus on first ten shots
         elif self.strategy == 4:
             if i in range(10):
-                shootingtime = random.uniform(1 / 0.8, lefttime / (25 - i)) * 0.8
+                shootingtime = random.uniform(2, 4)
             else:
                 shootingtime = random.uniform(1, lefttime / (25 - i))
+        # focus on last ten shots
         elif self.strategy == 5:
-            shootingtime= random.uniform(2,3)
+            if i in range(16,25):
+                shootingtime = random.uniform(2, 4)
+            else:
+                shootingtime = random.uniform(1, lefttime / (25 - i))
 
         return shootingtime
 
@@ -142,31 +155,38 @@ def sort_dic(dic):
     get the sorted game result based on the socres
     :param dic: the game result
     :return: the sorted game result
+    >>> dic = {'Curry':18, 'George':13, 'Thompson':15, 'Booker':20}
+    >>> sort_dic(dic)
+    [('Booker', 20), ('Curry', 18), ('Thompson', 15), ('George', 13)]
     """
     return sorted(dic.items(),key = lambda item:item[1],reverse=True)
 
 
-def get_game_result(candidate_number,player_list):
+def get_game_result(player_list):
     """
-    To get the player list of next round based on the number of required candidate and the player list of current round.
-    :param candidate_number: the number of required candidate
+    To get the result of the game based on the player list of current round.
     :param player_list: the player list of current round
-    :return: the player list of next round
+    :return result: the result of the game
     """
-    threshold = 0
-    score = 0
     result = {}
-    next_round_candidate={}
-    next_round_candidate_list = []
     for player in player_list:
-        score = player._3pointer_contest()
+        score = player.get_score()
         result[player.name] = score
-    #print(result)
-        #print('{} got {} this round!'.format(player.name, score))
+    return result
 
-    #print(result)
-    #print(stat)
+
+def get_next_round(candidate_number, result):
+    """
+    Based on the game result and the assign candidate_number to choose the candidate for next round
+    :param candidate_number: how many candidates can advance to next round
+    :param result: the game result with the players' scores
+    :return: the candidate list for next round
+    """
+    next_round_candidate = {}
+    next_round_candidate_list = []
+    # set the threshold for next round candidate
     threshold = sort_dic(result)[candidate_number-1][1]
+
     for key, value in result.items():
         if value >= threshold:
             next_round_candidate[key] = value
@@ -175,33 +195,32 @@ def get_game_result(candidate_number,player_list):
             next_round_candidate_list.append(player)
     return next_round_candidate_list
 
+
 def one_simulation(player_list):
     """
     Simulate one game
-    :return: the winner of the game
+    :param player_list: player list who attend the competition
+    :return: The winner of the game
     """
-
     over_time_flag=True
-    candidate_list = get_game_result(3,player_list)
-    #print('The players in the final game are:')
-    candidate_list = get_game_result(1, candidate_list)
+    candidate_list = get_next_round(3,get_game_result(player_list))
+    candidate_list = get_next_round(1,get_game_result(candidate_list))
     while over_time_flag:
         if len(candidate_list)==1:
             over_time_flag=False
         else:
-            #print('The players in the overtime game are:')
-            #for player in candidate_list:
-                #print(player[0])
-            candidate_list=get_game_result(1,candidate_list)
+            candidate_list=get_next_round(1,get_game_result(candidate_list))
 
     winner = candidate_list[0].name
     return winner
 
+
 if __name__ == '__main__':
+
+    # read csv file with player data
     file = csv.reader(open('player_data.csv'))
     headers = next(file)
     player_list=[]
-    result = {}
     for row in file:
         num = 0
         attr_list=[]
@@ -209,14 +228,81 @@ if __name__ == '__main__':
             attr_list.append(row[num])
             num+=1
         player_list.append(player(attr_list))
+    # simulation one game
+    print('\nOne game simulation: \n')
+    # first round
+    first = get_game_result(player_list)
+    print('=========================')
+    print("First round")
+    print('=========================')
+    print('Player              Score')
+    print('--------------      -----')
+    for key, value in first.items():
+        print('{:20} {:<5}'.format(key, value))
+    next_round_candidate_list = get_next_round(3, first)
+
+    # Final round
+    print('\n=========================')
+    print("Final round")
+    print('=========================')
+    print('Player              Score')
+    print('--------------      -----')
+    final = get_game_result(next_round_candidate_list)
+    for key, value in final.items():
+        print('{:20} {:<5}'.format(key, value))
+
+    next_round_candidate_list = get_next_round(1, final)
+
+    # OverTime or Winner
+    while len(next_round_candidate_list) != 1:
+        print('\n=========================')
+        print("Overtime")
+        print('=========================')
+        print('Player              Score')
+        print('--------------      -----')
+        ot = get_game_result(next_round_candidate_list)
+        for key, value in ot.items():
+            print('{:20} {:<5}'.format(key, value))
+        next_round_candidate_list = get_next_round(1, ot)
+
+    print('\n>>> The winner is: {}\n'.format(next_round_candidate_list[0].name))
+
+
+    print('===================================\n')
+    print('Strategy Detail: \n')
     for player in player_list:
-        player.choose_strategy(1200)
+        print(player.name)
+        print('\nBonus     Strategy    Average Score')
+        print('-----     --------    -------------')
+        player.choose_strategy(100)
     winner_list = []
     for index in range(1000):
         winner = one_simulation(player_list)
         winner_list.append(winner)
-    print('--------------------------------------')
-    print('Winning Rate:')
+    print('\n===============================================')
+    print("Ｗinning rate")
+    print('===============================================')
+    print('\nPlayer           Bonus   Strategy    Winning %')
+    print('-------------    -----   --------    ---------')
     for player in player_list:
-        print('The winning rate of {} is: {}'.format(player.name,
-                                                         round(winner_list.count(player.name) / len(winner_list), 3)))
+        print('{:15} {:6} {:10} {:10}%'.format(player.name, player.bonus, player.strategy, round(winner_list.count(player.name) / len(winner_list)*100, 2)))
+        #print('(Bonus:{}, Strategy:{})'.format(player.bonus, player.strategy))
+
+    print('\n================================================================')
+    print("Ｗinning rate when Curry & Thompson apply bad bonus and strategy")
+    print('================================================================')
+    print('\nPlayer           Bonus   Strategy    Winning %')
+    print('-------------    -----   --------    ---------')
+    player_list[0].bonus = 1
+    player_list[0].strategy = 5
+    player_list[3].bonus = 5
+    player_list[3].strategy = 1
+    winner_list = []
+    for index in range(1000):
+        winner = one_simulation(player_list)
+        winner_list.append(winner)
+    for player in player_list:
+        print('{:15} {:6} {:10} {:10}%'.format(player.name, player.bonus, player.strategy,
+                                               round(winner_list.count(player.name) / len(winner_list) * 100, 2)))
+
+
