@@ -1,4 +1,3 @@
-from random import choice, randint
 import random
 import math
 import csv
@@ -61,16 +60,20 @@ class player:
 
     def get_onfire(self, onfire):
         """
-        define the if a player is in onfire_mode for each shoot.
-        :param onfire: adding to the basic probability to turn on-fire state
-        :return: onfire_mode: 1 means player is in onfire_mode can increase their shooting %
+        define the if a player is in onfire_mode or oncold_mode(onfire_mode = -1) for each shoot.
+        :param onfire: the basic probability that the player get into the on_fire mode
+        :return: onfire_mode: 1 means player is in onfire_mode which can increase their shooting %
         and 0 means player is not in the onfire_mode, and there's no shooing % increase
+        and -1 means player is in the oncold_mode which would decrease their shooting %
         """
         prob = random.randint(1,100)
         if prob <= onfire:
             onfire_mode = 1
-        else:
+        elif prob <= onfire+50:
             onfire_mode = 0
+        else:
+            onfire_mode = -1
+
         return onfire_mode
 
     def runtime(self, i):
@@ -289,14 +292,15 @@ if __name__ == '__main__':
         #print('(Bonus:{}, Strategy:{})'.format(player.bonus, player.strategy))
 
     print('\n================================================================')
-    print("Ｗinning rate when Curry & Thompson apply bad bonus and strategy")
+    print("Ｗinning rate when Love & Thompson apply bad bonus and strategy")
     print('================================================================')
     print('\nPlayer           Bonus   Strategy    Winning %')
     print('-------------    -----   --------    ---------')
-    player_list[0].bonus = 1
-    player_list[0].strategy = 5
     player_list[3].bonus = 5
     player_list[3].strategy = 1
+    player_list[4].bonus = 1
+    player_list[4].strategy = 5
+
     winner_list = []
     for index in range(1000):
         winner = one_simulation(player_list)

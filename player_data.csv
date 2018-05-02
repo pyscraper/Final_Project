@@ -1,9 +1,9 @@
-﻿name,3pg,stamina,on_fire_prob,growing
-Stephen Curry,47.1,0.14,50,14.87
-Paul George,47.6,0.07,20,18.39
-Bradely Beal,45.3,0.18,20,21.11
+﻿name,3pg,stamina,onfire,variance
+Stephen Curry,47.1,0.14,30,14.87
+Paul George,47.6,0.07,30,18.39
+Bradely Beal,45.3,0.18,30,21.11
 Klay Thompson,51,0.06,30,20.5
-Kenvin Love,48.7,0.21,20,24.81
-Devin Booker,37.7,0.19,50,20.2
+Kenvin Love,48.7,0.21,30,24.81
+Devin Booker,37.7,0.19,30,20.2
 Eric Gordon,43.1,0.22,30,18.22
-Kyle Korver,50,0.19,10,22.44
+Kyle Korver,50,0.19,30,22.44
