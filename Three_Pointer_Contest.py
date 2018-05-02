@@ -67,10 +67,13 @@ class player:
         and -1 means player is in the oncold_mode which would decrease their shooting %
         """
         prob = random.randint(1,100)
+        # player get onfire
         if prob <= onfire:
             onfire_mode = 1
+        # player shoot as normal
         elif prob <= onfire+50:
             onfire_mode = 0
+        # player get oncold
         else:
             onfire_mode = -1
 
@@ -82,6 +85,7 @@ class player:
         :param i: the number of shoot
         :return: the simulated time spent of each run
         """
+        # after 5 shoots, player moves to the next spot
         if (i + 1) % 5 == 0 and i < 24:
             runtime = random.uniform(2, 4)
         else:
