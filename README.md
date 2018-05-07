@@ -1,12 +1,12 @@
 # Title:  NBA Three-Point Contest
 
 ## Team Member(s): MingFu Chou, Wenhao Hou, Han Li
-(Note: Don't put your email addresses here (which is public).  If a student wants their NAME hidden as well, due to optional FERPA regulations, they can be listed purely by their GitHub ID).
+
 
 # Monte Carlo Simulation Scenario & Purpose:
 (be sure to read the instructions given in course Moodle)
 
-Based on the wide open three-point percentage (NBA.com), stamina (2K18), shooting stability (Standard Deviation of 3pt%) ,the chosen location of money balls and strategy of each player, we simulate the score of all the participants in each round and pick players with the top two scores (player numbers may bigger than 2 if three or more get the top two scores simultaneously) to the final round. And then, we simulates the winner. After thousands of simulations, the program concludes the winning rate for each player and print out the best strategy and chosen location of money balls for each player.
+Based on the wide open three-point percentage (NBA.com), stamina (2K18), shooting stability (Standard Deviation of 3pt%) ,the chosen location of money balls and strategy of each player, we first present one game simulation result to enable user to understand the game rules and then simulate the score of all the participants in each round and pick players with the top three scores (player numbers may bigger than 3 if three or more get the top three scores simultaneously) to the final round. And then, we simulates the winner. After thousands of simulations, the program concludes the winning rate for each player and print out the best strategy and chosen location of money balls for each player.
 
 
 ## Simulation's variables of uncertainty
@@ -19,7 +19,7 @@ if the one-fire probability is larger than "prob", the player would reach to a o
 The winning rate of each player may highly depend on his wide open 3 point-field goal and influenced by his performance stability, which is up to the variance of each player's 3 point-field goal. And most of players may choose strategy 3 to get as higher points at money ball location as possible.
 
 ## Analytical Summary of your findings: (e.g. Did you adjust the scenario based on previous simulation outcomes?  What are the management decisions one could make from your simulation's output, etc.)
-Based on their 3 point shooting behavior of this season, players tend to choose the spot 1,2,3 as the money ball location and number 3,5 as the strategy. Among all the players, Love, Korver and Thompson have relative high rate to win the game. Booker have the worst performance and only get 0.9% chance to win championship.
+Based on their 3 point shooting behavior of this season, players tend to choose the spot 1 and 2 as the money ball location and number 3,4 as the strategy. Among all the players, Klay Thompson, Kyle Korver and Kevin Love have shown a significant advantage to win the game. Devin Booker have the worst performance and only get 0.7% chance to win the championship.
 
 ## Instructions on how to use the program:
 Specify the simulation times and run to see the simulation result.
