@@ -16,7 +16,7 @@ The variable "shoot" is a pseudo-random int number generated from 1 to 100, in t
 if the one-fire probability is larger than "prob", the player would reach to a on-fire state.
 
 ## Hypothesis or hypotheses before running the simulation:
-The winning rate of each player may highly depend on his wide open 3 point-field goal and influenced by his performance stability, which is up to the variance of each player's 3 point-field goal. And most of players may choose strategy 3 to get as higher points at money ball location as possible.
+The winning rate of each player may highly depend on his wide open 3 point-field goal and influenced by his performance stability, which is up to the variance of each player's 3 point-field goal. And most of players may choose strategy 3 to get as higher points at money ball location as possible or strategy 4 to achieve a relative a good state at the very start.
 
 ## Analytical Summary of your findings: (e.g. Did you adjust the scenario based on previous simulation outcomes?  What are the management decisions one could make from your simulation's output, etc.)
 Based on their 3 point shooting behavior of this season, players tend to choose the spot 1 and 2 as the money ball location and number 3,4 as the strategy. Among all the players, Klay Thompson, Kyle Korver and Kevin Love have shown a significant advantage to win the game. Devin Booker have the worst performance and only get 0.7% chance to win the championship.
